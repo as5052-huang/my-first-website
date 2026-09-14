@@ -22,8 +22,6 @@ PERSIST_KEYS = (
     "job_title",
     "job_description_saved",
     "last_file_id",
-    # ── 权限状态（从 license.py 的本地缓存读取，此处只保留会话层默认值）──
-    "_perm_state_synced",
 )
 
 _DEFAULTS: dict[str, Any] = {
@@ -45,6 +43,10 @@ def init_and_restore_state() -> None:
     """Fill session_state, then hydrate once from disk after a browser refresh."""
     for key, value in _DEFAULTS.items():
         st.session_state.setdefault(key, value)
+
+    # 防御性清理：移除已废弃的旧字段（防止客户端缓存导致 KeyError）
+    for legacy_key in ("_device_id",):
+        st.session_state.pop(legacy_key, None)
 
     if st.session_state.get("_state_hydrated"):
         return

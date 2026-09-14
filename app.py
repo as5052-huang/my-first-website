@@ -4,6 +4,7 @@ import html
 import json
 import logging
 import os
+import uuid
 from datetime import datetime
 
 # 配置日志输出到控制台
@@ -21,7 +22,7 @@ from openai import APIError, AuthenticationError, RateLimitError
 from ai import checklist_to_txt, optimize_resume, result_to_txt
 from license import (
     _build_status_info, check_permission, consume_single_use,
-    decrement_trial, redeem_code,
+    decrement_trial, redeem_code, _get_stable_device_id,
 )
 from parser import ResumeParseError, extract_resume_text
 from persist import init_and_restore_state, persist_ui_state
@@ -554,7 +555,7 @@ def _render_license_panel(device_id: str = "") -> None:
             st.session_state["_redeem_error"] = "请先输入兑换码"
             st.session_state["_redeem_success"] = ""
             return
-        device_id = st.session_state.get("_device_id", "")
+        device_id = _get_stable_device_id()
         ok, msg = redeem_code(code, device_id)
         if ok:
             st.session_state["_redeem_error"] = ""
@@ -616,9 +617,8 @@ def _render_license_panel(device_id: str = "") -> None:
 
 
 def _sync_perm_to_session(device_id: str = "") -> None:
-    """将 license 本地缓存状态同步到 session_state（按设备隔离，用于 UI 渲染判断）。"""
-    info = _build_status_info(device_id)
-    st.session_state["_perm_info"] = info
+    """将权限状态同步到 session_state（用于 UI 渲染判断）。"""
+    st.session_state["_perm_info"] = _build_status_info(device_id)
     st.session_state["_perm_state_synced"] = True
 
 
@@ -628,14 +628,9 @@ def _do_expand_sidebar() -> None:
 
 
 def _post_optimize_permission(tier: str, prev_trials: int, device_id: str = "") -> None:
-    """
-    优化成功后扣减权限（按设备隔离）：
-    - free 用户：试用次数 -1（写回本地缓存）
-    - single 用户：立即作废码（写回本地缓存）
-    """
+    """优化成功后扣减权限（按设备隔离）。"""
     if tier == "free":
-        success = decrement_trial(device_id)
-        if success:
+        if decrement_trial(device_id):
             logging.info(f"免费试用次数已扣减（原剩余 {prev_trials} 次，设备: {device_id}）")
         else:
             logging.error("免费试用次数扣减失败，请检查文件权限")
@@ -724,15 +719,8 @@ def main() -> None:
     st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
     init_and_restore_state()
 
-    # ── 设备 ID 管理（支持多设备隔离）──────────────────────
-    if "_device_id" not in st.session_state:
-        # 前端生成设备指纹 ID
-        st.session_state["_device_id"] = f"device_{datetime.now().strftime('%Y%m%d%H%M%S')}_{id(st)}"
-
-    # 注册设备 ID 到 session_state（供 license.py 使用）
-    device_id = st.session_state.get("_device_id", "")
-
-    # 同步权限状态到 session_state（按设备隔离）
+    # 设备 ID 基于机器特征生成，刷新/重启不变
+    device_id = _get_stable_device_id()
     _sync_perm_to_session(device_id)
 
     # 处理侧边栏展开请求
@@ -810,7 +798,7 @@ def main() -> None:
 
 
 def _render_template_library() -> None:
-    info = st.session_state.get("_perm_info") or _build_status_info(st.session_state.get("_device_id", ""))
+    info = st.session_state.get("_perm_info") or _build_status_info(_get_stable_device_id())
     if not info.get("can_template"):
         st.subheader("🔒 多行业模板库")
         st.markdown(
@@ -877,7 +865,7 @@ def _render_resume_input() -> None:
 
 
 def _render_job_input() -> None:
-    info = st.session_state.get("_perm_info") or _build_status_info(st.session_state.get("_device_id", ""))
+    info = st.session_state.get("_perm_info") or _build_status_info(_get_stable_device_id())
     st.markdown('<div class="card">', unsafe_allow_html=True)
     st.markdown("### 2. 目标岗位")
     st.text_input("岗位名称", placeholder="例如：产品经理 / Java 后端开发", key="job_title_input")
@@ -922,8 +910,8 @@ def _run_optimize(
         st.error("请填写目标岗位名称。")
         return
 
-    # ── 权限校验（复用 UI 状态，避免重复检查，按设备隔离）──────
-    device_id = st.session_state.get("_device_id", "")
+    # ── 权限校验（复用 UI 状态，避免重复检查）──────────────────
+    device_id = _get_stable_device_id()
     perm_info = st.session_state.get("_perm_info") or {}
     if not perm_info:
         perm_info = _build_status_info(device_id)
@@ -983,10 +971,10 @@ def _run_optimize(
 
 
 def _render_result() -> None:
-    result = st.session_state["result"]
+    result = st.session_state.get("result")
     perm_info = st.session_state.get("_perm_info") or {}
     if not perm_info:
-        perm_info = _build_status_info(st.session_state.get("_device_id", ""))
+        perm_info = _build_status_info(_get_stable_device_id())
         st.session_state["_perm_info"] = perm_info
     can_export = perm_info.get("can_export", False)
     tier = perm_info.get("tier", "free")

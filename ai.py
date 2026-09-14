@@ -235,7 +235,8 @@ def _score_issue_block(items: Any) -> str:
 
 def _load_json(content: str) -> dict[str, Any]:
     try:
-        data = json.loads(content)
+        # strict=False 允许字符串中包含 \n \r \t 等控制字符（AI 返回时常带换行）
+        data = json.loads(content, strict=False)
         if isinstance(data, dict):
             return data
     except json.JSONDecodeError:
@@ -243,7 +244,7 @@ def _load_json(content: str) -> dict[str, Any]:
     match = re.search(r"\{[\s\S]*\}", content)
     if not match:
         raise ValueError("模型返回不是有效 JSON，请重试。")
-    data = json.loads(match.group(0))
+    data = json.loads(match.group(0), strict=False)
     if not isinstance(data, dict):
         raise ValueError("模型返回格式异常，请重试。")
     return data
