@@ -18,6 +18,7 @@ import streamlit as st
 import streamlit.components.v1 as components
 from dotenv import load_dotenv
 from openai import APIError, AuthenticationError, RateLimitError
+from streamlit_js_eval import streamlit_js_eval
 
 from ai import checklist_to_txt, optimize_resume, result_to_txt
 from license import (
@@ -555,7 +556,7 @@ def _render_license_panel(device_id: str = "") -> None:
             st.session_state["_redeem_error"] = "请先输入兑换码"
             st.session_state["_redeem_success"] = ""
             return
-        device_id = _get_stable_device_id()
+        device_id = _get_device_id()
         ok, msg = redeem_code(code, device_id)
         if ok:
             st.session_state["_redeem_error"] = ""
@@ -618,7 +619,7 @@ def _render_license_panel(device_id: str = "") -> None:
 
 def _sync_perm_to_session(device_id: str = "") -> None:
     """将权限状态同步到 session_state（用于 UI 渲染判断）。"""
-    st.session_state["_perm_info"] = _build_status_info(device_id)
+    st.session_state["_perm_info"] = _build_status_info(device_id or _get_device_id())
     st.session_state["_perm_state_synced"] = True
 
 
@@ -715,13 +716,23 @@ def _render_hero_tips() -> None:
     st.markdown('</div>', unsafe_allow_html=True)
 
 
+def _init_browser_device_id() -> str:
+    """获取稳定设备 ID（直接使用 HTTP 请求级 UA 哈希，无 JS 回调延迟）。
+
+    内部调用 _get_stable_device_id()，保留此函数是为了让
+    main() 中的调用语义保持不变。
+    """
+    return _get_stable_device_id()
+
+
+def _get_device_id() -> str:
+    """统一的设备 ID 获取入口（直接使用 HTTP 请求级 UA 哈希）。"""
+    return _get_stable_device_id()
+
+
 def main() -> None:
     st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
     init_and_restore_state()
-
-    # 设备 ID 基于机器特征生成，刷新/重启不变
-    device_id = _get_stable_device_id()
-    _sync_perm_to_session(device_id)
 
     # 处理侧边栏展开请求
     if st.session_state.pop("_expand_sidebar", False):
@@ -741,6 +752,7 @@ def main() -> None:
     _render_hero_tips()
 
     # 获取当前会员状态（按设备隔离）
+    device_id = _get_device_id()
     perm_info = st.session_state.get("_perm_info") or {}
     if not perm_info:
         perm_info = _build_status_info(device_id)
@@ -769,6 +781,9 @@ def main() -> None:
     with st.container():
         st.markdown('<div class="result-col">', unsafe_allow_html=True)
         if run:
+            # 防重入的核心机制是 _on_optimize_click（已过滤 _is_optimizing=True 的情况）
+            # 和 _run_optimize 的 try/finally（确保 _is_optimizing 必被重置为 False）
+            # 此处只负责执行，不再二次拦截，否则会因状态机死锁导致按钮永远停在「优化中」
             _run_optimize(
                 st.session_state.get("resume_draft", ""),
                 st.session_state.get("job_title_input", ""),
@@ -798,7 +813,7 @@ def main() -> None:
 
 
 def _render_template_library() -> None:
-    info = st.session_state.get("_perm_info") or _build_status_info(_get_stable_device_id())
+    info = st.session_state.get("_perm_info") or _build_status_info(_get_device_id())
     if not info.get("can_template"):
         st.subheader("🔒 多行业模板库")
         st.markdown(
@@ -864,8 +879,22 @@ def _render_resume_input() -> None:
     st.markdown("</div>", unsafe_allow_html=True)
 
 
+def _on_optimize_click() -> None:
+    """点击优化按钮：防御性检查，若已在优化中则忽略本次点击。
+
+    防止重复触发 API 调用，避免用户连续点击造成多次计费。
+    """
+    if st.session_state.get("_is_optimizing"):
+        # 已经在优化中，忽略本次点击（on_click 触发时按钮理论上已 disabled，
+        # 此处作为防御性兜底，处理极端竞态或队列中残留的旧点击）。
+        return
+    st.session_state["_run_clicked"] = True
+    st.session_state["_is_optimizing"] = True
+
+
 def _render_job_input() -> None:
-    info = st.session_state.get("_perm_info") or _build_status_info(_get_stable_device_id())
+    info = st.session_state.get("_perm_info") or _build_status_info(_get_device_id())
+    is_optimizing = st.session_state.get("_is_optimizing", False)
     st.markdown('<div class="card">', unsafe_allow_html=True)
     st.markdown("### 2. 目标岗位")
     st.text_input("岗位名称", placeholder="例如：产品经理 / Java 后端开发", key="job_title_input")
@@ -876,8 +905,18 @@ def _render_job_input() -> None:
         key="job_description_input",
     )
     if info.get("can_optimize"):
-        st.button("一键优化", type="primary", use_container_width=True,
-                  on_click=lambda: st.session_state.update({"_run_clicked": True}))
+        # 优化进行中：禁用按钮并显示「优化中…」状态
+        # 防止重复点击触发多次 API 调用，避免重复计费
+        btn_label = "⏳ 优化中…" if is_optimizing else "一键优化"
+        st.button(
+            btn_label,
+            type="primary",
+            use_container_width=True,
+            disabled=is_optimizing,
+            on_click=_on_optimize_click,
+            key="optimize_btn",
+            help="点击后约 10–30 秒完成，请勿重复点击" if not is_optimizing else "正在优化中，请稍候…",
+        )
     else:
         st.button("🔒 一键优化（功能已锁定）", disabled=True, use_container_width=True)
         st.markdown(
@@ -898,83 +937,95 @@ def _run_optimize(
     job_description: str,
     industry: str,
 ) -> None:
-    # ── 参数校验（原有逻辑）─────────────────────────────────
-    api_key = (os.getenv("DEEPSEEK_API_KEY") or "").strip()
-    if not api_key:
-        st.error("未配置 DEEPSEEK_API_KEY，请在项目根目录 .env 中填写后重启应用。")
-        return
-    if not resume_text.strip():
-        st.error("请粘贴简历，或上传可提取文字的文件，也可使用行业模板。")
-        return
-    if not job_title.strip():
-        st.error("请填写目标岗位名称。")
-        return
-
-    # ── 权限校验（复用 UI 状态，避免重复检查）──────────────────
-    device_id = _get_stable_device_id()
-    perm_info = st.session_state.get("_perm_info") or {}
-    if not perm_info:
-        perm_info = _build_status_info(device_id)
-        st.session_state["_perm_info"] = perm_info
-    tier = perm_info["tier"]
-    remaining = perm_info["remaining_trials"]
-    expired_msg = perm_info.get("expired_msg")
-
-    # 免费用户且无剩余次数
-    if tier == "free" and remaining <= 0:
-        st.error("免费试用次数已用完，请先兑换会员再继续使用。")
-        st.session_state["_expand_sidebar"] = True
-        return
-
-    # 月度/年度会员已到期
-    if expired_msg:
-        st.warning(expired_msg)
-
-    with st.spinner("⏳ 正在分析简历 + JD 匹配 + 智能检测，请稍候（通常 10–30 秒）…"):
-        try:
-            result = optimize_resume(
-                api_key=api_key,
-                resume=resume_text,
-                job_title=job_title,
-                job_description=job_description,
-                industry=industry,
-                model=os.getenv("DEEPSEEK_MODEL") or None,
-            )
-        except AuthenticationError:
-            st.error("API Key 无效，请到 DeepSeek 开放平台核对。")
+    # ── 防重入：_is_optimizing 已在 main()/on_click 中置 True ──
+    # 此函数必须用 try/finally 保证状态被正确重置，避免按钮永久禁用
+    try:
+        # ── 参数校验（原有逻辑）─────────────────────────────────
+        api_key = (os.getenv("DEEPSEEK_API_KEY") or "").strip()
+        if not api_key:
+            st.error("未配置 DEEPSEEK_API_KEY，请在项目根目录 .env 中填写后重启应用。")
             return
-        except RateLimitError:
-            st.error("请求过于频繁或额度不足，请稍后再试。")
+        if not resume_text.strip():
+            st.error("请粘贴简历，或上传可提取文字的文件，也可使用行业模板。")
             return
-        except APIError as exc:
-            msg = str(exc)
-            if "402" in msg or "Insufficient Balance" in msg or getattr(exc, "status_code", None) == 402:
-                st.error("API 账户余额不足，请前往 DeepSeek 开放平台充值。")
-            else:
-                st.error(f"DeepSeek 接口出错：{exc}")
-            return
-        except Exception as exc:
-            st.error(f"发生未知错误：{exc}")
+        if not job_title.strip():
+            st.error("请填写目标岗位名称。")
             return
 
-    st.session_state["result"] = result
-    st.session_state["job_title"] = job_title.strip()
-    st.session_state["original_resume"] = resume_text.strip()
-    st.session_state["job_description_saved"] = job_description.strip()
-    st.session_state["export_stamp"] = datetime.now().strftime("%Y%m%d")
-    st.session_state["_just_optimized"] = True
-    # ── 权限后处理（按设备隔离）───────────────────────────────
-    _post_optimize_permission(tier, remaining, device_id)
-    persist_ui_state()
-    # 同步权限状态到 UI
-    _sync_perm_to_session(device_id)
+        # ── 权限校验（复用 UI 状态，避免重复检查）──────────────────
+        device_id = _get_device_id()
+        perm_info = st.session_state.get("_perm_info") or {}
+        if not perm_info:
+            perm_info = _build_status_info(device_id)
+            st.session_state["_perm_info"] = perm_info
+        tier = perm_info["tier"]
+        remaining = perm_info["remaining_trials"]
+        expired_msg = perm_info.get("expired_msg")
+
+        # 免费用户且无剩余次数
+        if tier == "free" and remaining <= 0:
+            st.error("免费试用次数已用完，请先兑换会员再继续使用。")
+            st.session_state["_expand_sidebar"] = True
+            return
+
+        # 月度/年度会员已到期
+        if expired_msg:
+            st.warning(expired_msg)
+
+        with st.spinner("⏳ 正在分析简历 + JD 匹配 + 智能检测，请稍候（通常 10–30 秒）…"):
+            try:
+                result = optimize_resume(
+                    api_key=api_key,
+                    resume=resume_text,
+                    job_title=job_title,
+                    job_description=job_description,
+                    industry=industry,
+                    model=os.getenv("DEEPSEEK_MODEL") or None,
+                )
+            except AuthenticationError:
+                st.error("API Key 无效，请到 DeepSeek 开放平台核对。")
+                return
+            except RateLimitError:
+                st.error("请求过于频繁或额度不足，请稍后再试。")
+                return
+            except APIError as exc:
+                msg = str(exc)
+                if "402" in msg or "Insufficient Balance" in msg or getattr(exc, "status_code", None) == 402:
+                    st.error("API 账户余额不足，请前往 DeepSeek 开放平台充值。")
+                else:
+                    st.error(f"DeepSeek 接口出错：{exc}")
+                return
+            except Exception as exc:
+                st.error(f"发生未知错误：{exc}")
+                return
+
+        st.session_state["result"] = result
+        st.session_state["job_title"] = job_title.strip()
+        st.session_state["original_resume"] = resume_text.strip()
+        st.session_state["job_description_saved"] = job_description.strip()
+        st.session_state["export_stamp"] = datetime.now().strftime("%Y%m%d")
+        st.session_state["_just_optimized"] = True
+        # ── 权限后处理（按设备隔离）───────────────────────────────
+        _post_optimize_permission(tier, remaining, device_id)
+        # 关键顺序：必须先 _sync_perm_to_session（用最新 license.json 重建 _perm_info），
+        # 再 persist_ui_state（把新的 _perm_info 落盘）。否则 ui_session.json
+        # 会写旧的 _perm_info（can_optimize=True），下次刷新就被旧值覆盖了。
+        _sync_perm_to_session(device_id)
+        persist_ui_state()
+    finally:
+        # ── 优化结束（成功/失败/异常）都必须恢复按钮可用状态 ──
+        was_optimizing = st.session_state.pop("_is_optimizing", False)
+        # 关键：rerun 让 Streamlit 用最新的 _is_optimizing / _perm_info 重新渲染按钮
+        # 否则按钮会卡在「优化中…」（它是在 _run_optimize 之前渲染的，本次脚本不会刷新它）
+        if was_optimizing:
+            st.rerun()
 
 
 def _render_result() -> None:
     result = st.session_state.get("result")
     perm_info = st.session_state.get("_perm_info") or {}
     if not perm_info:
-        perm_info = _build_status_info(_get_stable_device_id())
+        perm_info = _build_status_info(_get_device_id())
         st.session_state["_perm_info"] = perm_info
     can_export = perm_info.get("can_export", False)
     tier = perm_info.get("tier", "free")
