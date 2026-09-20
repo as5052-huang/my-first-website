@@ -1,27 +1,1502 @@
 {
-  "RS2026-SINGLE-001": {"tier": "single", "days": null, "label": "单次体验码"},
-  "RS2026-SINGLE-002": {"tier": "single", "days": null, "label": "单次体验码"},
-  "RS2026-SINGLE-003": {"tier": "single", "days": null, "label": "单次体验码"},
-  "RS2026-SINGLE-004": {"tier": "single", "days": null, "label": "单次体验码"},
-  "RS2026-SINGLE-005": {"tier": "single", "days": null, "label": "单次体验码"},
-  "RS2026-SINGLE-006": {"tier": "single", "days": null, "label": "单次体验码"},
-  "RS2026-SINGLE-007": {"tier": "single", "days": null, "label": "单次体验码"},
-  "RS2026-SINGLE-008": {"tier": "single", "days": null, "label": "单次体验码"},
-  "RS2026-SINGLE-009": {"tier": "single", "days": null, "label": "单次体验码"},
-  "RS2026-SINGLE-010": {"tier": "single", "days": null, "label": "单次体验码"},
-  "RS2026-MONTH-001": {"tier": "monthly", "days": 30, "label": "月度会员"},
-  "RS2026-MONTH-002": {"tier": "monthly", "days": 30, "label": "月度会员"},
-  "RS2026-MONTH-003": {"tier": "monthly", "days": 30, "label": "月度会员"},
-  "RS2026-MONTH-004": {"tier": "monthly", "days": 30, "label": "月度会员"},
-  "RS2026-MONTH-005": {"tier": "monthly", "days": 30, "label": "月度会员"},
-  "RS2026-MONTH-006": {"tier": "monthly", "days": 30, "label": "月度会员"},
-  "RS2026-MONTH-007": {"tier": "monthly", "days": 30, "label": "月度会员"},
-  "RS2026-MONTH-008": {"tier": "monthly", "days": 30, "label": "月度会员"},
-  "RS2026-MONTH-009": {"tier": "monthly", "days": 30, "label": "月度会员"},
-  "RS2026-MONTH-010": {"tier": "monthly", "days": 30, "label": "月度会员"},
-  "RS2026-YEAR-001": {"tier": "monthly", "days": 365, "label": "年度会员"},
-  "RS2026-YEAR-002": {"tier": "monthly", "days": 365, "label": "年度会员"},
-  "RS2026-YEAR-003": {"tier": "monthly", "days": 365, "label": "年度会员"},
-  "RS2026-YEAR-004": {"tier": "monthly", "days": 365, "label": "年度会员"},
-  "RS2026-YEAR-005": {"tier": "monthly", "days": 365, "label": "年度会员"}
+  "RS2026-SINGLE-001": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-002": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-003": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-004": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-005": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-006": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-007": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-008": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-009": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-010": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-011": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-012": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-013": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-014": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-015": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-016": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-017": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-018": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-019": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-020": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-021": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-022": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-023": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-024": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-025": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-026": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-027": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-028": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-029": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-030": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-031": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-032": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-033": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-034": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-035": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-036": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-037": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-038": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-039": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-040": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-041": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-042": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-043": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-044": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-045": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-046": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-047": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-048": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-049": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-050": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-051": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-052": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-053": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-054": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-055": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-056": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-057": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-058": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-059": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-060": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-061": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-062": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-063": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-064": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-065": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-066": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-067": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-068": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-069": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-070": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-071": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-072": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-073": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-074": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-075": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-076": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-077": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-078": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-079": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-080": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-081": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-082": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-083": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-084": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-085": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-086": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-087": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-088": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-089": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-090": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-091": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-092": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-093": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-094": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-095": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-096": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-097": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-098": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-099": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-SINGLE-100": {
+    "tier": "single",
+    "days": null,
+    "label": "单次体验码"
+  },
+  "RS2026-MONTH-001": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-002": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-003": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-004": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-005": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-006": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-007": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-008": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-009": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-010": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-011": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-012": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-013": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-014": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-015": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-016": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-017": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-018": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-019": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-020": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-021": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-022": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-023": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-024": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-025": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-026": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-027": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-028": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-029": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-030": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-031": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-032": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-033": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-034": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-035": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-036": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-037": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-038": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-039": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-040": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-041": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-042": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-043": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-044": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-045": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-046": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-047": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-048": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-049": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-050": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-051": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-052": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-053": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-054": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-055": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-056": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-057": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-058": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-059": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-060": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-061": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-062": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-063": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-064": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-065": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-066": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-067": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-068": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-069": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-070": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-071": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-072": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-073": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-074": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-075": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-076": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-077": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-078": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-079": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-080": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-081": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-082": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-083": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-084": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-085": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-086": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-087": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-088": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-089": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-090": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-091": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-092": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-093": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-094": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-095": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-096": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-097": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-098": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-099": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-MONTH-100": {
+    "tier": "monthly",
+    "days": 30,
+    "label": "月度会员"
+  },
+  "RS2026-YEAR-001": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-002": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-003": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-004": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-005": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-006": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-007": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-008": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-009": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-010": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-011": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-012": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-013": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-014": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-015": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-016": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-017": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-018": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-019": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-020": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-021": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-022": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-023": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-024": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-025": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-026": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-027": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-028": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-029": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-030": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-031": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-032": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-033": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-034": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-035": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-036": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-037": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-038": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-039": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-040": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-041": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-042": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-043": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-044": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-045": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-046": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-047": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-048": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-049": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-050": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-051": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-052": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-053": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-054": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-055": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-056": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-057": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-058": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-059": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-060": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-061": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-062": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-063": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-064": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-065": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-066": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-067": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-068": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-069": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-070": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-071": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-072": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-073": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-074": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-075": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-076": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-077": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-078": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-079": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-080": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-081": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-082": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-083": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-084": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-085": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-086": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-087": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-088": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-089": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-090": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-091": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-092": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-093": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-094": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-095": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-096": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-097": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-098": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-099": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  },
+  "RS2026-YEAR-100": {
+    "tier": "monthly",
+    "days": 365,
+    "label": "年度会员"
+  }
 }
