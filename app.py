@@ -941,7 +941,11 @@ def _run_optimize(
     # 此函数必须用 try/finally 保证状态被正确重置，避免按钮永久禁用
     try:
         # ── 参数校验（原有逻辑）─────────────────────────────────
-        api_key = (os.getenv("DEEPSEEK_API_KEY") or "").strip()
+        # api_key = (os.getenv("DEEPSEEK_API_KEY") or "").strip()
+
+        # 直接读取平台上填的密钥
+        api_key = st.secrets["LLM_API_KEY"]
+        base_url = st.secrets["LLM_BASE_URL"]
         if not api_key:
             st.error("未配置 DEEPSEEK_API_KEY，请在项目根目录 .env 中填写后重启应用。")
             return
