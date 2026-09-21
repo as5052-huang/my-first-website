@@ -94,20 +94,26 @@ def _get_base_device_id() -> str:
 def _get_browser_device_id() -> str | None:
     """通过 localStorage 获取浏览器级稳定 ID（每个浏览器独立，跨会话稳定）。
 
-    实现细节：
-    - 调用 streamlit_js_eval 执行一段 JS：
-      1. 读取 localStorage['ro_browser_id_v1']
-      2. 若不存在则生成新的 browser_xxx 写入 localStorage
-      3. 返回该 ID
-    - 返回值缓存到 session_state，避免重复触发 JS 评估
-    - 失败时返回 None，调用方应回退到机器级 ID
+    实现细节（优先级递减）：
+    1. session_state 缓存（避免重复 JS 调用）
+    2. st.query_params fallback（Streamlit Cloud 上 streamlit_js_eval 不可用时）
+       - 首次访问时生成 ID 写入 ?ro_did=xxx，再次访问时读回
+       - 跨 session 稳定（URL 参数会随请求发送）
+    3. streamlit_js_eval JS 回调（仅本地环境）
+       - 调用 JS：读取 localStorage['ro_browser_id_v1']
+       - 若不存在则生成新的 browser_xxx 写入 localStorage，再返回
+       - 失败时返回 None，调用方回退到机器级 ID
 
     优势：
     - localStorage 是浏览器隔离的，不同浏览器/无痕模式互不影响
     - 即使部署在共享服务器，每个用户的 ID 也是独立的
     - 跨会话稳定（除非用户清除浏览器数据）
+
+    注意：st.query_params 在 Streamlit Cloud 上工作稳定，因为请求 URL
+    会被 Streamlit 保留，即使 Cloud 做了负载均衡也不影响（每个请求
+    都能从 URL 读取到同一个 ro_did 参数）。
     """
-    # 优先使用 session_state 缓存（避免重复 JS 调用）
+    # 0. session_state 缓存（防止 JS 异步返回导致 ID 闪烁）
     try:
         import streamlit as st
 
@@ -119,6 +125,29 @@ def _get_browser_device_id() -> str | None:
     except Exception:
         return None
 
+    # ── 1. st.query_params fallback（Streamlit Cloud 优先）─────────
+    # streamlit_js_eval 在 Streamlit Cloud 上可能无法正常工作：
+    # - Cloud 的 WebSocket 连接不支持 streamlit_js_eval 的 HTTP 轮询端点
+    # - 这会导致 JS 永远不返回，device ID 获取失败 → 回退到机器级 ID
+    #   → 所有用户共享同一个机器 ID → license.json 冲突
+    # query_params 通过 URL 参数传递，Streamlit Cloud 对所有请求保持一致
+    try:
+        import streamlit as st
+
+        existing = st.query_params.get("ro_did", "")
+        if existing and isinstance(existing, str) and existing.startswith("browser_") and len(existing) > 10:
+            logger.info(f"通过 st.query_params 获取设备 ID: {existing[:16]}...")
+            return existing
+
+        # 首次访问：生成新 ID 并写回 URL 参数（在下一次请求生效）
+        new_id = f"browser_{hashlib.sha256(os.urandom(16)).hexdigest()[:24]}"
+        st.query_params["ro_did"] = new_id
+        logger.info(f"生成了新的 ro_did: {new_id[:16]}...（写入 query_params）")
+        return new_id
+    except Exception as e:
+        logger.debug(f"st.query_params fallback 失败: {e}")
+
+    # ── 2. streamlit_js_eval（本地环境）───────────────────────────
     try:
         from streamlit_js_eval import streamlit_js_eval
 
@@ -136,6 +165,7 @@ def _get_browser_device_id() -> str | None:
         result = streamlit_js_eval(js_expressions=js_expr, key="_browser_id_eval_v1")
 
         if result and isinstance(result, str) and result.startswith("browser_") and len(result) > 10:
+            logger.info(f"通过 streamlit_js_eval 获取设备 ID: {result[:16]}...")
             try:
                 import streamlit as st
 
@@ -144,7 +174,7 @@ def _get_browser_device_id() -> str | None:
                 pass
             return result
     except Exception as e:
-        logger.debug(f"获取浏览器 ID 失败: {e}")
+        logger.debug(f"获取浏览器 ID 失败（streamlit_js_eval）: {e}")
 
     return None
 
@@ -251,8 +281,9 @@ def _get_stable_device_id() -> str:
     """获取稳定设备 ID（每个浏览器独立）。
 
     设备 ID 优先级：
-    1. 浏览器 localStorage ID（最稳定，每个浏览器独立 - 适合共享服务器/多用户场景）
-    2. 机器特征 + 文件缓存（向后兼容 - 同服务器多客户端共享，仅适合单用户本地部署）
+    1. st.query_params ro_did（Streamlit Cloud 兼容，每个用户独立）
+    2. 浏览器 localStorage ID（最稳定，每个浏览器独立 - 适合共享服务器/多用户场景）
+    3. 机器特征 + 文件缓存（向后兼容 - 同服务器多客户端共享，仅适合单用户本地部署）
 
     移动端追加 _mobile 后缀，使手机和电脑分别有独立的会员状态。
 
@@ -273,10 +304,11 @@ def _get_stable_device_id() -> str:
     is_mobile = _is_mobile_user_agent(ua)
     mobile_suffix = "_mobile" if is_mobile else ""
 
-    # 1. 浏览器级 ID（localStorage）
+    # 1. 浏览器级 ID（localStorage / query_params）
     browser_id = _get_browser_device_id()
     if browser_id:
         final_id = f"{browser_id}{mobile_suffix}"
+        logger.info(f"设备 ID 命中 browser_id: {final_id[:20]}...")
         # 尝试迁移旧 device_xxx 会员（如果启用）
         _try_migrate_legacy_license(final_id, browser_id)
         try:
@@ -288,6 +320,7 @@ def _get_stable_device_id() -> str:
         return final_id
 
     # 2. 回退到机器特征 ID（首次访问 JS 尚未返回；或 JS 不可用）
+    logger.warning("未能获取浏览器级 ID，回退到机器特征 ID（Streamlit Cloud 多用户可能冲突）")
     base_id = _get_base_device_id()
     final_id = f"{base_id}{mobile_suffix}"
     try:

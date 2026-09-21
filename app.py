@@ -16,6 +16,71 @@ logger = logging.getLogger(__name__)
 
 import streamlit as st
 from dotenv import load_dotenv
+
+# ── Streamlit Cloud 可见日志处理器 ──────────────────────────
+class _StLogHandler(logging.Handler):
+    """将日志输出到 Streamlit 界面（在 Streamlit Cloud 等无法看终端的环境下很有用）。
+
+    只在 app 初始化阶段渲染一次，后续日志追加到 session_state 缓存，
+    由 _render_log_messages() 在 UI 底部统一展示。
+    """
+    _max_messages = 20
+
+    def emit(self, record: logging.LogRecord) -> None:
+        try:
+            # 延迟导入避免循环
+            import streamlit as _st
+
+            # session_state 还不存在时跳过
+            if not hasattr(_st, "session_state") or not _st.session_state:
+                return
+
+            level = record.levelno
+            if level >= logging.ERROR:
+                msg_type = "error"
+            elif level >= logging.WARNING:
+                msg_type = "warning"
+            else:
+                msg_type = "info"
+
+            # 截断超长消息
+            msg = record.getMessage()
+            if len(msg) > 300:
+                msg = msg[:297] + "..."
+
+            entry = {"type": msg_type, "msg": msg, "logger": record.name}
+            _st.session_state.setdefault("_app_log_messages", [])
+            _st.session_state["_app_log_messages"].append(entry)
+            # 保留最近 N 条
+            _st.session_state["_app_log_messages"] = _st.session_state["_app_log_messages"][-self._max_messages :]
+        except Exception:
+            pass  # 任何渲染错误都不要打断日志记录
+
+
+_st_handler = _StLogHandler()
+_st_handler.setLevel(logging.INFO)
+logging.getLogger().addHandler(_st_handler)
+logger.info("日志处理器已注册（Streamlit Cloud 日志输出已启用）")
+
+
+def _render_log_messages() -> None:
+    """在页面底部渲染日志消息（仅渲染最近 5 条，避免干扰主内容）。"""
+    messages = st.session_state.get("_app_log_messages", [])
+    if not messages:
+        return
+    # 只展示最近的 5 条，避免喧宾夺主
+    recent = messages[-5:]
+    with st.expander("🔧 系统日志（调试用）", expanded=False):
+        for m in recent:
+            t = m["type"]
+            icon = {"error": "❌", "warning": "⚠️", "info": "ℹ️"}.get(t, "•")
+            txt = f"{icon} `[{m['logger']}]` {m['msg']}"
+            if t == "error":
+                st.error(txt)
+            elif t == "warning":
+                st.warning(txt)
+            else:
+                st.info(txt)
 from openai import APIError, AuthenticationError, RateLimitError
 from streamlit_js_eval import streamlit_js_eval
 
@@ -119,6 +184,38 @@ GLOBAL_ZH_CSS = f"""
         min-width: 0;
     }}
 
+    /* 下载 / 复制按钮行：统一对齐与间距
+     * 注意：.download-row / .copy-row 的直接子元素 > div 是 Streamlit 的
+     * stHorizontalBlock，真正的两个列在它的子元素 [data-testid="column"] 里。
+     * 因此把 grid 布局下移到 stHorizontalBlock 上，对里面两列生效。 */
+    .download-row > div,
+    .copy-row > div {{
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 0.5rem !important;
+        width: 100% !important;
+    }}
+    .download-row [data-testid="column"],
+    .copy-row [data-testid="column"] {{
+        width: 100% !important;
+        min-width: 0 !important;
+    }}
+    .download-row .stButton > button,
+    .download-row .stDownloadButton > button,
+    .copy-row .stButton > button,
+    .copy-row .stDownloadButton > button {{
+        width: 100% !important;
+        min-height: 42px !important;
+        white-space: nowrap;
+    }}
+    /* 复制按钮通过 st.iframe 渲染，让 iframe 填满列宽 + 移除默认边框 */
+    .download-row iframe,
+    .copy-row iframe {{
+        width: 100% !important;
+        border: 0 !important;
+        display: block !important;
+    }}
+
     /* 移动端（<= 768px）：单栏堆叠 */
     @media (max-width: 768px) {{
         .main-layout {{
@@ -189,29 +286,11 @@ GLOBAL_ZH_CSS = f"""
         [data-testid="stHorizontalBlock"]:has([data-testid="stMetricValue"]) {{
             flex-direction: column !important;
         }}
-        /* 下载按钮四列 -> 两行两列 */
-        .download-row {{
-            display: grid !important;
-            grid-template-columns: 1fr 1fr !important;
-            gap: 0.4rem !important;
-        }}
-        .download-row > div {{
-            width: 100% !important;
-        }}
-        .download-row .stButton > button,
-        .download-row .stDownloadButton > button {{
-            width: 100% !important;
-        }}
-        /* 复制按钮独立一行 */
-        .copy-row {{
-            display: block !important;
-        }}
+        /* 移动端：下载 / 复制按钮行堆叠为单列 */
+        .download-row > div,
         .copy-row > div {{
-            width: 100% !important;
-            margin-bottom: 0.4rem !important;
-        }}
-        .copy-row .stButton > button {{
-            width: 100% !important;
+            grid-template-columns: 1fr !important;
+            gap: 0.4rem !important;
         }}
     }}
 
@@ -220,22 +299,6 @@ GLOBAL_ZH_CSS = f"""
             padding-top: 1rem;
             padding-left: 1.1rem;
             padding-right: 1.1rem;
-        }}
-        .download-row {{
-            display: grid !important;
-            grid-template-columns: 1fr 1fr !important;
-            gap: 0.5rem !important;
-        }}
-        .download-row > div {{
-            width: 100% !important;
-        }}
-        .copy-row {{
-            display: grid !important;
-            grid-template-columns: 1fr 1fr !important;
-            gap: 0.5rem !important;
-        }}
-        .copy-row > div {{
-            width: 100% !important;
         }}
     }}
 </style>
@@ -810,6 +873,9 @@ def main() -> None:
     # 浮动「返回顶端」按钮
     _back_to_top_button()
 
+    # Streamlit Cloud 可见的调试日志（页面底部折叠展示）
+    _render_log_messages()
+
 
 def _render_template_library() -> None:
     info = st.session_state.get("_perm_info") or _build_status_info(_get_device_id())
@@ -936,97 +1002,136 @@ def _run_optimize(
     job_description: str,
     industry: str,
 ) -> None:
-    # ── 防重入：_is_optimizing 已在 main()/on_click 中置 True ──
-    # 此函数必须用 try/finally 保证状态被正确重置，避免按钮永久禁用
-    # 判断是否本地环境：本地优先读 .env
-    # 方案：先捕获异常，本地自动切换 .env
+    # ── 1. 获取 API 凭证 ────────────────────────────────────
+    api_key: str | None = None
+    base_url: str | None = None
+
+    # 优先读 st.secrets（Streamlit Cloud 部署路径）
     try:
         api_key = st.secrets["DEEPSEEK_API_KEY"]
         base_url = st.secrets["DEEPSEEK_BASE_URL"]
-    except (KeyError, st.errors.StreamlitSecretNotFoundError):
-        # 本地环境加载 .env
+        logger.info("使用 st.secrets 加载 API 凭证")
+    except (KeyError, AttributeError, st.errors.StreamlitSecretNotFoundError):
+        # 本地开发路径：加载 .env
         from dotenv import load_dotenv
         load_dotenv()
         api_key = os.getenv("DEEPSEEK_API_KEY")
         base_url = os.getenv("DEEPSEEK_BASE_URL")
+        logger.info("使用 .env 加载 API 凭证")
 
-        if not api_key:
-            st.error("未配置 DEEPSEEK_API_KEY，请在项目根目录 .env 中填写后重启应用。")
+    # ── 2. 凭证与输入校验（两条路径共用）───────────────────────
+    if not api_key:
+        logger.error("未配置 DEEPSEEK_API_KEY")
+        st.error("未配置 DEEPSEEK_API_KEY，请在 Streamlit Cloud Secrets 中填写 DEEPSEEK_API_KEY。")
+        _clear_optimizing_state()
+        return
+
+    if not resume_text.strip():
+        logger.warning("简历内容为空")
+        st.error("请粘贴简历，或上传可提取文字的文件，也可使用行业模板。")
+        _clear_optimizing_state()
+        return
+
+    if not job_title.strip():
+        logger.warning("岗位名称为空")
+        st.error("请填写目标岗位名称。")
+        _clear_optimizing_state()
+        return
+
+    # ── 3. 权限校验（复用 UI 状态，避免重复检查）───────────────
+    device_id = _get_device_id()
+    perm_info = st.session_state.get("_perm_info") or {}
+    if not perm_info:
+        perm_info = _build_status_info(device_id)
+        st.session_state["_perm_info"] = perm_info
+    tier = perm_info["tier"]
+    remaining = perm_info["remaining_trials"]
+    expired_msg = perm_info.get("expired_msg")
+
+    logger.info(
+        f"开始优化流程 | tier={tier} | remaining={remaining} | "
+        f"device_id={device_id[:16]}... | resume_len={len(resume_text)}"
+    )
+
+    # 免费用户且无剩余次数
+    if tier == "free" and remaining <= 0:
+        logger.warning(f"免费试用次数已用完，device_id={device_id[:16]}")
+        st.error("免费试用次数已用完，请先兑换会员再继续使用。")
+        st.session_state["_expand_sidebar"] = True
+        _clear_optimizing_state()
+        return
+
+    # 月度/年度会员已到期
+    if expired_msg:
+        logger.warning(f"会员已过期: {expired_msg}")
+        st.warning(expired_msg)
+
+    # ── 4. 调用 AI 优化 ──────────────────────────────────────
+    logger.info("开始调用 DeepSeek API...")
+    with st.spinner("⏳ 正在分析简历 + JD 匹配 + 智能检测，请稍候（通常 10–30 秒）…"):
+        try:
+            result = optimize_resume(
+                api_key=api_key,
+                resume=resume_text,
+                job_title=job_title,
+                job_description=job_description,
+                industry=industry,
+                base_url=base_url,
+                model=os.getenv("DEEPSEEK_MODEL") or None,
+            )
+            logger.info("DeepSeek API 调用成功")
+        except AuthenticationError:
+            logger.error("API Key 无效")
+            st.error("API Key 无效，请到 DeepSeek 开放平台核对。")
+            _clear_optimizing_state()
             return
-        if not resume_text.strip():
-            st.error("请粘贴简历，或上传可提取文字的文件，也可使用行业模板。")
+        except RateLimitError:
+            logger.error("请求过于频繁或额度不足")
+            st.error("请求过于频繁或额度不足，请稍后再试。")
+            _clear_optimizing_state()
             return
-        if not job_title.strip():
-            st.error("请填写目标岗位名称。")
+        except APIError as exc:
+            msg = str(exc)
+            if "402" in msg or "Insufficient Balance" in msg or getattr(exc, "status_code", None) == 402:
+                logger.error(f"API 账户余额不足: {exc}")
+                st.error("API 账户余额不足，请前往 DeepSeek 开放平台充值。")
+            else:
+                logger.error(f"DeepSeek 接口出错: {exc}")
+                st.error(f"DeepSeek 接口出错：{exc}")
+            _clear_optimizing_state()
             return
-
-        # ── 权限校验（复用 UI 状态，避免重复检查）──────────────────
-        device_id = _get_device_id()
-        perm_info = st.session_state.get("_perm_info") or {}
-        if not perm_info:
-            perm_info = _build_status_info(device_id)
-            st.session_state["_perm_info"] = perm_info
-        tier = perm_info["tier"]
-        remaining = perm_info["remaining_trials"]
-        expired_msg = perm_info.get("expired_msg")
-
-        # 免费用户且无剩余次数
-        if tier == "free" and remaining <= 0:
-            st.error("免费试用次数已用完，请先兑换会员再继续使用。")
-            st.session_state["_expand_sidebar"] = True
+        except Exception as exc:
+            logger.exception(f"优化过程发生未知错误: {exc}")
+            st.error(f"发生未知错误：{exc}")
+            _clear_optimizing_state()
             return
 
-        # 月度/年度会员已到期
-        if expired_msg:
-            st.warning(expired_msg)
+    # ── 5. 保存结果 ──────────────────────────────────────────
+    logger.info("保存优化结果到 session_state")
+    st.session_state["result"] = result
+    st.session_state["job_title"] = job_title.strip()
+    st.session_state["original_resume"] = resume_text.strip()
+    st.session_state["job_description_saved"] = job_description.strip()
+    st.session_state["export_stamp"] = datetime.now().strftime("%Y%m%d")
+    st.session_state["_just_optimized"] = True
 
-        with st.spinner("⏳ 正在分析简历 + JD 匹配 + 智能检测，请稍候（通常 10–30 秒）…"):
-            try:
-                result = optimize_resume(
-                    api_key=api_key,
-                    resume=resume_text,
-                    job_title=job_title,
-                    job_description=job_description,
-                    industry=industry,
-                    model=os.getenv("DEEPSEEK_MODEL") or None,
-                )
-            except AuthenticationError:
-                st.error("API Key 无效，请到 DeepSeek 开放平台核对。")
-                return
-            except RateLimitError:
-                st.error("请求过于频繁或额度不足，请稍后再试。")
-                return
-            except APIError as exc:
-                msg = str(exc)
-                if "402" in msg or "Insufficient Balance" in msg or getattr(exc, "status_code", None) == 402:
-                    st.error("API 账户余额不足，请前往 DeepSeek 开放平台充值。")
-                else:
-                    st.error(f"DeepSeek 接口出错：{exc}")
-                return
-            except Exception as exc:
-                st.error(f"发生未知错误：{exc}")
-                return
+    # ── 6. 权限后处理（按设备隔离）─────────────────────────────
+    _post_optimize_permission(tier, remaining, device_id)
 
-        st.session_state["result"] = result
-        st.session_state["job_title"] = job_title.strip()
-        st.session_state["original_resume"] = resume_text.strip()
-        st.session_state["job_description_saved"] = job_description.strip()
-        st.session_state["export_stamp"] = datetime.now().strftime("%Y%m%d")
-        st.session_state["_just_optimized"] = True
-        # ── 权限后处理（按设备隔离）───────────────────────────────
-        _post_optimize_permission(tier, remaining, device_id)
-        # 关键顺序：必须先 _sync_perm_to_session（用最新 license.json 重建 _perm_info），
-        # 再 persist_ui_state（把新的 _perm_info 落盘）。否则 ui_session.json
-        # 会写旧的 _perm_info（can_optimize=True），下次刷新就被旧值覆盖了。
-        _sync_perm_to_session(device_id)
-        persist_ui_state()
-    finally:
-        # ── 优化结束（成功/失败/异常）都必须恢复按钮可用状态 ──
-        was_optimizing = st.session_state.pop("_is_optimizing", False)
-        # 关键：rerun 让 Streamlit 用最新的 _is_optimizing / _perm_info 重新渲染按钮
-        # 否则按钮会卡在「优化中…」（它是在 _run_optimize 之前渲染的，本次脚本不会刷新它）
-        if was_optimizing:
-            st.rerun()
+    # 关键顺序：必须先 _sync_perm_to_session，再用 persist_ui_state
+    _sync_perm_to_session(device_id)
+    persist_ui_state()
+
+    # ── 7. 清理优化中状态并刷新 UI ────────────────────────────
+    _clear_optimizing_state()
+
+
+def _clear_optimizing_state() -> None:
+    """清理优化中状态，确保按钮恢复正常。"""
+    was_optimizing = st.session_state.pop("_is_optimizing", False)
+    if was_optimizing:
+        logger.debug("清理 _is_optimizing 状态，触发页面刷新")
+        st.rerun()
 
 
 def _render_result() -> None:
