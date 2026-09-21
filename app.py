@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import base64
 import html
 import json
 import logging
@@ -15,7 +16,6 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 import streamlit as st
-import streamlit.components.v1 as components
 from dotenv import load_dotenv
 from openai import APIError, AuthenticationError, RateLimitError
 from streamlit_js_eval import streamlit_js_eval
@@ -1253,9 +1253,20 @@ def _export_filename(prefix: str, job_title: str, stamp: str) -> str:
     return f"{prefix}_{safe}_{stamp}.txt"
 
 
+def _render_html(html_content: str, height: int = 0) -> None:
+    """通过 ``st.iframe`` 渲染任意 HTML。
+
+    ``st.components.v1.html`` 自 2026-06-01 起被弃用，这里改用 ``st.iframe`` +
+    base64 data URL 实现同样的能力：浏览器把 data URL 视作普通 iframe 源，
+    HTML / CSS / JS 在隔离的 iframe 上下文中执行，对主页面零污染。
+    """
+    b64 = base64.b64encode(html_content.encode("utf-8")).decode("ascii")
+    st.iframe(f"data:text/html;base64,{b64}", height=height)
+
+
 def _copy_button(text: str, element_id: str) -> None:
     payload = json.dumps(text, ensure_ascii=False)
-    components.html(
+    _render_html(
         f"""
         <button id="{element_id}" style="
             width:100%;height:42px;border:0;border-radius:10px;
@@ -1283,7 +1294,7 @@ def _copy_button(text: str, element_id: str) -> None:
 
 def _back_to_top_button() -> None:
     """页面底部浮动「返回顶端」按钮，PC / 手机均适用。"""
-    components.html(
+    _render_html(
         """
         <a id="back-to-top" href="javascript:void(0)" style="
             display: block;
