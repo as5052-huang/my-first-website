@@ -939,13 +939,18 @@ def _run_optimize(
 ) -> None:
     # ── 防重入：_is_optimizing 已在 main()/on_click 中置 True ──
     # 此函数必须用 try/finally 保证状态被正确重置，避免按钮永久禁用
+    # 判断是否本地环境：本地优先读 .env
+    # 方案：先捕获异常，本地自动切换 .env
     try:
-        # ── 参数校验（原有逻辑）─────────────────────────────────
-        # api_key = (os.getenv("DEEPSEEK_API_KEY") or "").strip()
+        api_key = st.secrets["DEEPSEEK_API_KEY"]
+        base_url = st.secrets["DEEPSEEK_BASE_URL"]
+    except (KeyError, st.errors.StreamlitSecretNotFoundError):
+        # 本地环境加载 .env
+        from dotenv import load_dotenv
+        load_dotenv()
+        api_key = os.getenv("DEEPSEEK_API_KEY")
+        base_url = os.getenv("DEEPSEEK_BASE_URL")
 
-        # 直接读取平台上填的密钥
-        api_key = st.secrets["LLM_API_KEY"]
-        base_url = st.secrets["LLM_BASE_URL"]
         if not api_key:
             st.error("未配置 DEEPSEEK_API_KEY，请在项目根目录 .env 中填写后重启应用。")
             return
