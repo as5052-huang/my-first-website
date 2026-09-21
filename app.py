@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import base64
 import html
 import json
 import logging
@@ -1253,15 +1252,15 @@ def _export_filename(prefix: str, job_title: str, stamp: str) -> str:
     return f"{prefix}_{safe}_{stamp}.txt"
 
 
-def _render_html(html_content: str, height: int = 0) -> None:
+def _render_html(html_content: str, height: int | str = "content") -> None:
     """通过 ``st.iframe`` 渲染任意 HTML。
 
-    ``st.components.v1.html`` 自 2026-06-01 起被弃用，这里改用 ``st.iframe`` +
-    base64 data URL 实现同样的能力：浏览器把 data URL 视作普通 iframe 源，
-    HTML / CSS / JS 在隔离的 iframe 上下文中执行，对主页面零污染。
+    ``st.components.v1.html`` 自 2026-06-01 起被弃用，这里改用 ``st.iframe``：
+    当 ``src`` 不是 URL / Path 时，``st.iframe`` 会把字符串作为 raw HTML 通过
+    ``srcdoc`` 属性嵌入 iframe，浏览器渲染效果与 ``components.html`` 完全一致。
+    默认 ``height="content"`` 让 iframe 自动贴合内容高度，避免固定像素与内容不匹配。
     """
-    b64 = base64.b64encode(html_content.encode("utf-8")).decode("ascii")
-    st.iframe(f"data:text/html;base64,{b64}", height=height)
+    st.iframe(html_content, height=height)
 
 
 def _copy_button(text: str, element_id: str) -> None:
@@ -1288,7 +1287,7 @@ def _copy_button(text: str, element_id: str) -> None:
           }});
         </script>
         """,
-        height=52,
+        height="content",
     )
 
 
@@ -1334,7 +1333,7 @@ def _back_to_top_button() -> None:
         onmouseout="this.style.background='#2563eb';this.style.transform='scale(1)';"
         >↑</a>
         """,
-        height=0,
+        height=1,
     )
 
 
